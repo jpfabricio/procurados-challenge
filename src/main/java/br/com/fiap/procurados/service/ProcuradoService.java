@@ -1,10 +1,15 @@
 package br.com.fiap.procurados.service;
 
-import br.com.fiap.procurados.DTO.PaginacaoFbiDTO;
-import br.com.fiap.procurados.DTO.ProcuradoDTO;
+import br.com.fiap.procurados.DTO.fbi.ImagemFbiDTO;
+import br.com.fiap.procurados.DTO.fbi.PaginacaoFbiDTO;
+import br.com.fiap.procurados.DTO.fbi.ProcuradoFbiDTO;
+import br.com.fiap.procurados.model.Caracteristica;
+import br.com.fiap.procurados.model.Classificacao;
+import br.com.fiap.procurados.model.Imagem;
 import br.com.fiap.procurados.model.Procurado;
 import br.com.fiap.procurados.repository.ProcuradoRepository;
 import br.com.fiap.procurados.repository.rest.FbiAPIRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -13,6 +18,7 @@ import retrofit2.Response;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static br.com.fiap.procurados.config.RetrofitConfig.createRepository;
 
@@ -22,35 +28,29 @@ public class ProcuradoService {
     @Autowired
     private ProcuradoRepository repository;
 
-    @Value("${fbi.url}")
-    private String fbiBaseUrl;
+    @Autowired
+    private RestService restService;
 
-    public void salva(Procurado procurado){
-        repository.save(procurado);
+    public void salvaProcuradosFbi(){
+        List<ProcuradoFbiDTO> procurados = restService.buscaTodosProcuradosFbi();
+
+        procurados.parallelStream().forEach(procurado -> {
+            Procurado procuradoModel = criaProcuradoAPartirDeProcuradoFbiDto(procurado);
+            repository.save(procuradoModel);
+        });
+
+
     }
 
-    public PaginacaoFbiDTO buscaProcuradosFbi(String itensPorPagina, int pagina){
-        Response<PaginacaoFbiDTO> response = null;
-        try {
-            Call<PaginacaoFbiDTO> call = createRepository(fbiBaseUrl, FbiAPIRepository.class).busca(itensPorPagina, pagina);
-            response = call.execute();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return response.body();
-    }
+    private Procurado criaProcuradoAPartirDeProcuradoFbiDto(ProcuradoFbiDTO procurado){
+        Procurado procuradoModel = new Procurado(procurado);
 
-    public List<ProcuradoDTO> buscaAteAcabar(){
-        List<ProcuradoDTO> procurados = new ArrayList<ProcuradoDTO>();
-        boolean isListaVazia = false;
-        int pagina = 1;
+        List<Imagem> imagemModels = procurado.getImagens().stream()
+                .map(imagemFbiDTO -> new Imagem(imagemFbiDTO.getDescricao(), imagemFbiDTO.getUrlImagem(), procuradoModel))
+                .collect(Collectors.toList());
 
-        while (isListaVazia == false){
-            PaginacaoFbiDTO busca = buscaProcuradosFbi("50", pagina);
-            procurados.addAll(busca.getItems());
-            isListaVazia = busca.getItems().isEmpty();
-            pagina++;
-        }
-        return procurados;
+        procuradoModel.setImagens(imagemModels);
+
+        return procuradoModel;
     }
 }

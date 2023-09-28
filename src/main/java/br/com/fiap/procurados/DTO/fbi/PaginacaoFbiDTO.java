@@ -1,4 +1,4 @@
-package br.com.fiap.procurados.DTO;
+package br.com.fiap.procurados.DTO.fbi;
 
 import com.google.gson.annotations.Expose;
 import lombok.Data;
@@ -12,7 +12,7 @@ public class PaginacaoFbiDTO {
     private int total;
 
     @Expose
-    private List<ProcuradoDTO> items;
+    private List<ProcuradoFbiDTO> items;
 
     @Expose
     private int page;

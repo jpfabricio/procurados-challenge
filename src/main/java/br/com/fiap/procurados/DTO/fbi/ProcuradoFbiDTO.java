@@ -1,14 +1,13 @@
-package br.com.fiap.procurados.DTO;
+package br.com.fiap.procurados.DTO.fbi;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import lombok.Data;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
-public class ProcuradoDTO {
+public class ProcuradoFbiDTO {
 
     @Expose
     @SerializedName("title")
@@ -57,5 +56,13 @@ public class ProcuradoDTO {
     @Expose
     @SerializedName("description")
     private String descricao;
+
+    @Expose
+    @SerializedName("images")
+    private List<ImagemFbiDTO> imagens;
+
+    @Expose
+    @SerializedName("uid")
+    private String idFbi;
 }
 
