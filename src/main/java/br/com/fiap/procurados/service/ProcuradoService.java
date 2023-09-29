@@ -3,6 +3,8 @@ package br.com.fiap.procurados.service;
 import br.com.fiap.procurados.DTO.fbi.ImagemFbiDTO;
 import br.com.fiap.procurados.DTO.fbi.PaginacaoFbiDTO;
 import br.com.fiap.procurados.DTO.fbi.ProcuradoFbiDTO;
+import br.com.fiap.procurados.DTO.interpol.PaginacaoInterpolDTO;
+import br.com.fiap.procurados.DTO.interpol.ProcuradoInterpolDTO;
 import br.com.fiap.procurados.model.Caracteristica;
 import br.com.fiap.procurados.model.Classificacao;
 import br.com.fiap.procurados.model.Imagem;
@@ -36,6 +38,11 @@ public class ProcuradoService {
         return procurado;
     }
 
+    public Procurado buscaPorIdInterpol(String idInterpol){
+        Procurado procurado = repository.findByIdInterpol(idInterpol);
+        return procurado;
+    }
+
     public void salvaProcuradosFbi(){
         List<ProcuradoFbiDTO> procurados = restService.buscaTodosProcuradosFbi();
 
@@ -60,13 +67,20 @@ public class ProcuradoService {
     }
 
     public void salvaProcuradosInterpol(){
-        List<ProcuradoFbiDTO> procurados = restService.buscaTodosProcuradosFbi();
+        PaginacaoInterpolDTO procurados = restService.buscaProcuradosInterpol("1000", 1);
 
-        procurados.parallelStream().filter(procurado -> buscaPorIdFbi(procurado.getIdFbi()) == null).forEach(procurado -> {
-            Procurado procuradoModel = criaProcuradoAPartirDeProcuradoFbiDto(procurado);
+        procurados.getListaDeProcuradosInterpol().getListaDeProcurados().parallelStream().filter(procurado -> buscaPorIdInterpol(procurado.getIdInterpol()) == null).forEach(procurado -> {
+            Procurado procuradoModel = criaProcuradoAPartirDeProcuradoInterpolDTO(procurado);
             repository.save(procuradoModel);
         });
+    }
 
+    private Procurado criaProcuradoAPartirDeProcuradoInterpolDTO(ProcuradoInterpolDTO procurado){
+        Procurado procuradoModel = new Procurado(procurado);
+        List<Imagem> imagemModels = List.of(new Imagem(null, procurado.getLinksImagem().getImagem() != null ? procurado.getLinksImagem().getImagem().getLinkImagem() : null, procuradoModel));
 
+        procuradoModel.setImagens(imagemModels);
+
+        return procuradoModel;
     }
 }

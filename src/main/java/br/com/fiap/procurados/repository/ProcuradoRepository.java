@@ -9,4 +9,6 @@ public interface ProcuradoRepository extends JpaRepository<Procurado, Integer> {
 
     Procurado findByIdFbi(String idFbi);
 
+    Procurado findByIdInterpol(String idInterpol);
+
 }

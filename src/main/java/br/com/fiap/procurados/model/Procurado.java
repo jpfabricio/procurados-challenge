@@ -1,6 +1,7 @@
 package br.com.fiap.procurados.model;
 
 import br.com.fiap.procurados.DTO.fbi.ProcuradoFbiDTO;
+import br.com.fiap.procurados.DTO.interpol.ProcuradoInterpolDTO;
 import br.com.fiap.procurados.enuns.Origem;
 import com.google.gson.annotations.Expose;
 import jakarta.persistence.*;
@@ -66,32 +67,22 @@ public class Procurado {
         this.nascimento = (procuradoFbiDTO.getDataAniversario() != null && !procuradoFbiDTO.getDataAniversario().isEmpty()) ? procuradoFbiDTO.getDataAniversario().get(0) : "dado não registrado";
         this.idFbi = procuradoFbiDTO.getIdFbi() != null ? procuradoFbiDTO.getIdFbi() : "dado não registrado";
         this.origem = Origem.FBI;
-        criaCaracteristica(procuradoFbiDTO);
-        criaClassificacao(procuradoFbiDTO);
+        criaCaracteristicaFbi(procuradoFbiDTO);
+        criaClassificacaoFbi(procuradoFbiDTO);
     }
 
-//    public Procurado(ProcuradoInterpolDTO procuradoInterpolDTO) {
-//        this.nome = procuradoInterpolDTO.getNome() != null ? procuradoInterpolDTO.getNome().concat(" ").concat(procuradoInterpolDTO.getSobrenome()) : "dado não registrado";
-//        this.sexo = "dado não registrado";
-//        this.raca = "dado não registrado";
-//        this.nascimento = procuradoInterpolDTO.getDataNascimento() != null ? procuradoInterpolDTO.getDataNascimento() : "dado não registrado";
-//        this.idInterpol = procuradoInterpolDTO.getIdInterpol() != null ? procuradoInterpolDTO.getIdInterpol() : "dado não registrado";
-//        this.origem = Origem.INTERPOL;
-//        this.caracteristicas = new Caracteristica(
-//                procuradoInterpolDTO.getNacionalidades() != null ?  procuradoInterpolDTO.getNacionalidades().get(0) : "dado não registrado",
-//                "dado não registrado",
-//                "dado não registrado",
-//                "dado não registrado",
-//                "dado não registrado",
-//                this);
-//        this.classificacao = new Classificacao(
-//                "dado não registrado",
-//                "dado não registrado",
-//                "dado não registrado",
-//                this);
-//    }
+    public Procurado(ProcuradoInterpolDTO procuradoInterpolDTO) {
+        this.nome = procuradoInterpolDTO.getNome() != null ? procuradoInterpolDTO.getNome().concat(" ").concat(procuradoInterpolDTO.getSobrenome()) : "dado não registrado";
+        this.sexo = "dado não registrado";
+        this.raca = "dado não registrado";
+        this.nascimento = procuradoInterpolDTO.getDataNascimento() != null ? procuradoInterpolDTO.getDataNascimento() : "dado não registrado";
+        this.idInterpol = procuradoInterpolDTO.getIdInterpol() != null ? procuradoInterpolDTO.getIdInterpol() : "dado não registrado";
+        this.origem = Origem.INTERPOL;
+        criaCaracteristicaInterpol(procuradoInterpolDTO);
+        criaClassificacaoInterpol();
+    }
 
-    public void criaCaracteristica(ProcuradoFbiDTO procurado){
+    public void criaCaracteristicaFbi(ProcuradoFbiDTO procurado){
         this.caracteristicas = new Caracteristica(
                 procurado.getNacionalidade(),
                 (procurado.getLingua() != null && !procurado.getLingua().isEmpty()) ? procurado.getLingua().get(0) : "dado não registrado",
@@ -101,11 +92,29 @@ public class Procurado {
                 this);
     }
 
-    public void criaClassificacao(ProcuradoFbiDTO procurado){
+    public void criaCaracteristicaInterpol(ProcuradoInterpolDTO procuradoInterpolDTO){
+        this.caracteristicas = new Caracteristica(
+                procuradoInterpolDTO.getNacionalidades() != null ?  procuradoInterpolDTO.getNacionalidades().get(0) : "dado não registrado",
+                "dado não registrado",
+                "dado não registrado",
+                "dado não registrado",
+                "dado não registrado",
+                this);
+    }
+
+    public void criaClassificacaoFbi(ProcuradoFbiDTO procurado){
         this.classificacao = new Classificacao(
                 procurado.getClassificacaoDaPessoa(),
                 procurado.getDataPublicacao(),
                 procurado.getDescricao(),
+                this);
+    }
+
+    public void criaClassificacaoInterpol(){
+        this.classificacao = new Classificacao(
+                "dado não registrado",
+                "dado não registrado",
+                "dado não registrado",
                 this);
     }
 }

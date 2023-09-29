@@ -33,11 +33,16 @@ public class ProcuradoController {
         service.salvaProcuradosFbi();
     }
 
+    @PostMapping("/interpol/popula")
+    @ResponseBody
+    public void populaBancoComProcuradosInterpol(){
+        service.salvaProcuradosInterpol();
+    }
+
     @GetMapping("/interpol")
     @ResponseBody
-    public PaginacaoInterpolDTO buscaProcuradosInterpol(){
-        PaginacaoInterpolDTO busca = restService.buscaProcuradosInterpol("160", 1);
-        return busca;
+    public Procurado buscaProcuradosInterpol(@RequestParam(name = "idInterpol") String idInterpol){
+        return service.buscaPorIdInterpol(idInterpol);
     }
 
 }
