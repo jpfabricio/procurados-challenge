@@ -31,10 +31,15 @@ public class ProcuradoService {
     @Autowired
     private RestService restService;
 
+    public Procurado buscaPorIdFbi(String idFbi){
+        Procurado procurado = repository.findByIdFbi(idFbi);
+        return procurado;
+    }
+
     public void salvaProcuradosFbi(){
         List<ProcuradoFbiDTO> procurados = restService.buscaTodosProcuradosFbi();
 
-        procurados.parallelStream().forEach(procurado -> {
+        procurados.parallelStream().filter(procurado -> buscaPorIdFbi(procurado.getIdFbi()) == null).forEach(procurado -> {
             Procurado procuradoModel = criaProcuradoAPartirDeProcuradoFbiDto(procurado);
             repository.save(procuradoModel);
         });
@@ -52,5 +57,16 @@ public class ProcuradoService {
         procuradoModel.setImagens(imagemModels);
 
         return procuradoModel;
+    }
+
+    public void salvaProcuradosInterpol(){
+        List<ProcuradoFbiDTO> procurados = restService.buscaTodosProcuradosFbi();
+
+        procurados.parallelStream().filter(procurado -> buscaPorIdFbi(procurado.getIdFbi()) == null).forEach(procurado -> {
+            Procurado procuradoModel = criaProcuradoAPartirDeProcuradoFbiDto(procurado);
+            repository.save(procuradoModel);
+        });
+
+
     }
 }

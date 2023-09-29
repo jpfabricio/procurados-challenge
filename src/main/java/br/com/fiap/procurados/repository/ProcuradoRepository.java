@@ -6,4 +6,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ProcuradoRepository extends JpaRepository<Procurado, Integer> {
+
+    Procurado findByIdFbi(String idFbi);
+
 }

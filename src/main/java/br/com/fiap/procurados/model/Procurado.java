@@ -2,6 +2,7 @@ package br.com.fiap.procurados.model;
 
 import br.com.fiap.procurados.DTO.fbi.ProcuradoFbiDTO;
 import br.com.fiap.procurados.enuns.Origem;
+import com.google.gson.annotations.Expose;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,32 +20,43 @@ public class Procurado {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "procurado")
+    @Expose
     private int id;
 
+    @Expose
     private String nome;
 
+    @Expose
     private String sexo;
 
+    @Expose
     private String raca;
 
+    @Expose
     private String nascimento;
 
+    @Expose
     @Column(name = "id_fbi")
     private String idFbi;
 
+    @Expose
     @Column(name = "id_interpol")
     private String idInterpol;
 
+    @Expose
     @Enumerated(EnumType.STRING)
     private Origem origem;
 
+    @Expose
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "procurado")
     private Caracteristica caracteristicas;
 
+    @Expose
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "procurado")
     private Classificacao classificacao;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "procurado")
+    @Expose
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "procurado", fetch = FetchType.EAGER)
     private List<Imagem> imagens;
 
     public Procurado(ProcuradoFbiDTO procuradoFbiDTO) {

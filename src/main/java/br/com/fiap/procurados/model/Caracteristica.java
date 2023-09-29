@@ -1,5 +1,6 @@
 package br.com.fiap.procurados.model;
 
+import com.google.gson.annotations.Expose;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,17 +16,23 @@ public class Caracteristica {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "caracteristica")
+    @Expose
     private int id;
 
+    @Expose
     private String nacionalidade;
 
+    @Expose
     private String idioma;
 
+    @Expose
     @Column(name = "cor_do_olho")
     private String corDoOlho;
 
+    @Expose
     private String altura;
 
+    @Expose
     private String peso;
 
     @OneToOne
