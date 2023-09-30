@@ -1,8 +1,5 @@
 package br.com.fiap.procurados.controller;
 
-import br.com.fiap.procurados.DTO.fbi.PaginacaoFbiDTO;
-import br.com.fiap.procurados.DTO.fbi.ProcuradoFbiDTO;
-import br.com.fiap.procurados.DTO.interpol.PaginacaoInterpolDTO;
 import br.com.fiap.procurados.model.Procurado;
 import br.com.fiap.procurados.service.ProcuradoService;
 import br.com.fiap.procurados.service.RestService;
@@ -21,12 +18,6 @@ public class ProcuradoController {
     @Autowired
     private RestService restService;
 
-    @GetMapping("/fbi/{idFbi}")
-    @ResponseBody
-    public Procurado buscaProcuradoPorIdFbi(@PathVariable String idFbi){
-        return service.buscaPorIdFbi(idFbi);
-    }
-
     @PostMapping("/fbi/popula")
     @ResponseBody
     public void populaBancoComProcuradosFbi(){
@@ -39,10 +30,17 @@ public class ProcuradoController {
         service.salvaProcuradosInterpol();
     }
 
-    @GetMapping("/interpol")
+    @GetMapping
     @ResponseBody
-    public Procurado buscaProcuradosInterpol(@RequestParam(name = "idInterpol") String idInterpol){
-        return service.buscaPorIdInterpol(idInterpol);
+    public Procurado buscaProcuradosInterpolOuFbi(@RequestParam(name = "idFbiOuIdInterpol") String idFbiOuIdInterpol){
+        return service.buscaPorIdFbiOuIdInterpol(idFbiOuIdInterpol);
     }
+
+    @GetMapping("lista")
+    @ResponseBody
+    public List<Procurado> listaProcurados(@RequestParam(name = "nome", required = false) String nome){
+        return service.listaProcurados(nome);
+    }
+
 
 }
